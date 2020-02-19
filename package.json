@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "tsc",
+    "prepublish": "npm run build",
     "watch": "tsc --watch",
     "clean": "rm -rf dist",
     "test": "jasmine",
