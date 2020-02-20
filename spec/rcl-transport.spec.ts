@@ -1,4 +1,4 @@
-import { RomiService, RomiTopic } from '@romi/core';
+import { RomiService, RomiTopic } from '@osrf/romi-js-core-interfaces';
 import * as rclnodejs from 'rclnodejs';
 import RclnodejsTransport from '../lib';
 

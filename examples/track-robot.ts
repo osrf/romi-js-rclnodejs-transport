@@ -1,4 +1,4 @@
-import * as RomiCore from '@romi/core';
+import * as RomiCore from '@osrf/romi-js-core-interfaces';
 import RclnodejsTransport from '../lib';
 
 async function trackRobot(): Promise<void> {

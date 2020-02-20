@@ -10,7 +10,7 @@ import {
   SubscriptionCb,
   Transport,
   Type,
-} from '@romi/core';
+} from '@osrf/romi-js-core-interfaces';
 import * as rclnodejs from 'rclnodejs';
 
 export class RclnodejsTransport implements Transport {

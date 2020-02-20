@@ -1,11 +1,10 @@
 {
-  "name": "@romi/rclnodejs-transport",
+  "name": "@osrf/romi-js-rclnodejs-transport",
   "version": "0.0.1",
   "description": "transport for RoMi using rclnodejs",
-  "private": true,
   "scripts": {
     "build": "tsc",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "watch": "tsc --watch",
     "clean": "rm -rf dist",
     "test": "jasmine",
@@ -19,7 +18,7 @@
   "author": "Teo Koon Peng <koonpeng@openrobotics.org>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@romi/core": "file:../romi-js-core",
+    "@osrf/romi-js-core-interfaces": "git+https://github.com/osrf/romi-js-core-interfaces.git#semver:^0.0.1",
     "rclnodejs": "^0.12.0"
   },
   "devDependencies": {
