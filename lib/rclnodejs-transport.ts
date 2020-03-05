@@ -1,5 +1,6 @@
 import {
   DurabilityPolicy,
+  EventEmitter,
   HistoryPolicy,
   Options,
   Publisher,
@@ -9,24 +10,25 @@ import {
   Subscription,
   SubscriptionCb,
   Transport,
-  Type,
-} from '@osrf/romi-js-core-interfaces';
+  TransportEvents,
+} from '@osrf/romi-js-core-interfaces/transport';
 import * as rclnodejs from 'rclnodejs';
 
-export class RclnodejsTransport implements Transport {
+export class RclnodejsTransport extends EventEmitter<TransportEvents> implements Transport {
   static async create(nodeName: string): Promise<RclnodejsTransport> {
     try {
       await rclnodejs.init();
-    } catch { /* do nothing */ }
+    } catch {
+      /* do nothing */
+    }
     return new RclnodejsTransport(nodeName);
   }
 
-  get name(): string { return this._node.name(); }
+  get name(): string {
+    return this._node.name();
+  }
 
-  createPublisher<MessageType extends Type>(
-    topic: RomiTopic<MessageType>,
-    options: Options = {},
-  ): Publisher<InstanceType<MessageType>> {
+  createPublisher<Message>(topic: RomiTopic<Message>, options: Options = {}): Publisher<Message> {
     const rclOptions: rclnodejs.Options = {};
     if (options.qos) {
       rclOptions.qos = new rclnodejs.QoS(
@@ -39,9 +41,9 @@ export class RclnodejsTransport implements Transport {
     return this._node.createPublisher(topic.type as rclnodejs.TypeClass, topic.topic, rclOptions);
   }
 
-  subscribe<MessageType extends Type>(
-    topic: RomiTopic<MessageType>,
-    cb: SubscriptionCb<InstanceType<MessageType>>,
+  subscribe<Message>(
+    topic: RomiTopic<Message>,
+    cb: SubscriptionCb<Message>,
     options: Options = {},
   ): Subscription {
     const rclOptions: rclnodejs.Options = {};
@@ -53,11 +55,12 @@ export class RclnodejsTransport implements Transport {
         this._toRclDurabilityPolicy(options.qos.durabilityPolicy),
       );
     }
+
     const rosSub = this._node.createSubscription(
       topic.type as rclnodejs.TypeClass,
       topic.topic,
       rclOptions,
-      cb as rclnodejs.SubscriptionCallback,
+      msg => cb(topic.validate(msg)),
     );
 
     return {
@@ -67,10 +70,10 @@ export class RclnodejsTransport implements Transport {
     };
   }
 
-  async call<RequestType extends Type, ResponseType extends Type>(
-    service: RomiService<RequestType, ResponseType>,
-    req: InstanceType<RequestType>,
-  ): Promise<InstanceType<ResponseType>> {
+  async call<Request, Response>(
+    service: RomiService<Request, Response>,
+    req: Request,
+  ): Promise<Response> {
     let client = this._clients.get(service.service);
     if (client === undefined) {
       client = this._node.createClient(service.type as rclnodejs.TypeClass, service.service);
@@ -78,7 +81,7 @@ export class RclnodejsTransport implements Transport {
     }
     return new Promise(res => {
       if (client) {
-        client.sendRequest(req, resp => res(resp as InstanceType<ResponseType>));
+        client.sendRequest(req, resp => res(service.validateResponse(resp)));
       }
     });
   }
@@ -91,6 +94,7 @@ export class RclnodejsTransport implements Transport {
   private _clients = new Map<string, rclnodejs.Client>();
 
   private constructor(nodeName: string) {
+    super();
     this._node = rclnodejs.createNode(nodeName);
     rclnodejs.spin(this._node);
   }
@@ -110,7 +114,7 @@ export class RclnodejsTransport implements Transport {
   }
 
   private _toRclReliabilityPolicy(
-    reliabilityPolicy?: ReliabilityPolicy
+    reliabilityPolicy?: ReliabilityPolicy,
   ): rclnodejs.QoS.ReliabilityPolicy {
     if (reliabilityPolicy === undefined) {
       return rclnodejs.QoS.ReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT;
@@ -126,7 +130,7 @@ export class RclnodejsTransport implements Transport {
   }
 
   private _toRclDurabilityPolicy(
-    durabilityPolicy?: DurabilityPolicy
+    durabilityPolicy?: DurabilityPolicy,
   ): rclnodejs.QoS.DurabilityPolicy {
     if (durabilityPolicy === undefined) {
       return rclnodejs.QoS.DurabilityPolicy.RMW_QOS_POLICY_DURABILITY_SYSTEM_DEFAULT;

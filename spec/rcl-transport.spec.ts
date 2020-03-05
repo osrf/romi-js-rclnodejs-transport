@@ -1,4 +1,4 @@
-import { RomiService, RomiTopic } from '@osrf/romi-js-core-interfaces';
+import { RomiService, RomiTopic } from '@osrf/romi-js-core-interfaces/transport';
 import * as rclnodejs from 'rclnodejs';
 import RclnodejsTransport from '../lib';
 
@@ -26,7 +26,8 @@ describe('rcl transport tests', () => {
   });
 
   itt('publish subscribe loopback', done => {
-    const testTopic: RomiTopic = {
+    const testTopic: RomiTopic<any> = {
+      validate: msg => msg,
       type: 'std_msgs/msg/String',
       topic: 'test_topic',
     };
@@ -41,8 +42,9 @@ describe('rcl transport tests', () => {
   });
 
   itt('call service', done => {
-    const testService: RomiService = {
-      type: 'std_srvs/srv/Empty',
+    const testService: RomiService<any, any> = {
+      validateResponse: msg => msg,
+      type: 'std_srvs/srv/SetBool',
       service: 'test_service',
     };
 
@@ -50,6 +52,6 @@ describe('rcl transport tests', () => {
       done();
     });
 
-    transport.call(testService, {});
+    transport.call(testService, { data: true });
   });
 });

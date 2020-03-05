@@ -1,2 +1,12 @@
-/dist/
 /node_modules/
+
+# typescript output
+/lib/**/*.js
+/lib/**/*.js.map
+/lib/**/*.d.ts
+/spec/**/*.js
+/spec/**/*.js.map
+/spec/**/*.d.ts
+/examples/**/*.js
+/examples/**/*.js.map
+/examples/**/*.d.ts
