@@ -1,6 +1,5 @@
 import {
   DurabilityPolicy,
-  EventEmitter,
   HistoryPolicy,
   Options,
   Publisher,
@@ -14,7 +13,7 @@ import {
 } from '@osrf/romi-js-core-interfaces/transport';
 import * as rclnodejs from 'rclnodejs';
 
-export class RclnodejsTransport extends EventEmitter<TransportEvents> implements Transport {
+export class RclnodejsTransport extends TransportEvents implements Transport {
   static async create(nodeName: string): Promise<RclnodejsTransport> {
     try {
       await rclnodejs.init();
