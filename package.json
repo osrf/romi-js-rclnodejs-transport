@@ -8,7 +8,7 @@
     "watch": "tsc --watch",
     "clean": "tsc --build --clean",
     "test": "jasmine",
-    "lint": "eslint . --ext .ts,.js",
+    "lint": "eslint --ext .ts lib spec",
     "docs": "rm -rf docs && typedoc"
   },
   "repository": {
@@ -18,7 +18,7 @@
   "author": "Teo Koon Peng <koonpeng@openrobotics.org>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@osrf/romi-js-core-interfaces": "0.0.2-alpha.2",
+    "@osrf/romi-js-core-interfaces": "file:../romi-js-core-interfaces",
     "rclnodejs": "^0.13.0"
   },
   "devDependencies": {

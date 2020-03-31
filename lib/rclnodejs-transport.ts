@@ -27,8 +27,9 @@ export class RclnodejsTransport extends TransportEvents implements Transport {
     return this._node.name();
   }
 
-  createPublisher<Message>(topic: RomiTopic<Message>, options: Options = {}): Publisher<Message> {
+  createPublisher<Message>(topic: RomiTopic<Message>, options?: Options): Publisher<Message> {
     const rclOptions: rclnodejs.Options = {};
+    options = options ? options : topic.options ? topic.options : {};
     if (options.qos) {
       rclOptions.qos = new rclnodejs.QoS(
         this._toRclHistoryPolicy(options.qos.historyPolicy),
@@ -43,9 +44,10 @@ export class RclnodejsTransport extends TransportEvents implements Transport {
   subscribe<Message>(
     topic: RomiTopic<Message>,
     cb: SubscriptionCb<Message>,
-    options: Options = {},
+    options?: Options,
   ): Subscription {
     const rclOptions: rclnodejs.Options = {};
+    options = options ? options : topic.options ? topic.options : {};
     if (options.qos) {
       rclOptions.qos = new rclnodejs.QoS(
         this._toRclHistoryPolicy(options.qos.historyPolicy),

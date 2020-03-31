@@ -22,11 +22,13 @@ describe('rcl transport tests', () => {
   });
 
   afterAll(() => {
-    rclnodejs.shutdown();
+    if (!rclnodejs.isShutdown()) {
+      rclnodejs.shutdown();
+    }
   });
 
   itt('publish subscribe loopback', done => {
-    const testTopic: RomiTopic<any> = {
+    const testTopic: RomiTopic<unknown> = {
       validate: msg => msg,
       type: 'std_msgs/msg/String',
       topic: 'test_topic',
@@ -42,7 +44,8 @@ describe('rcl transport tests', () => {
   });
 
   itt('call service', done => {
-    const testService: RomiService<any, any> = {
+    const testService: RomiService<unknown, unknown> = {
+      validateRequest: msg => msg,
       validateResponse: msg => msg,
       type: 'std_srvs/srv/SetBool',
       service: 'test_service',
