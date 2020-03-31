@@ -4,7 +4,7 @@ function wrapAssertion(
   assertion: jasmine.ImplementationCallback,
   timeout: number,
 ): jasmine.ImplementationCallback {
-  const wrapped = (done: DoneFn): void => {
+  const wrapped = async (done: DoneFn): Promise<void> => {
     const timer = setTimeout(() => {
       done.fail('timeout');
     }, timeout);
@@ -18,7 +18,7 @@ function wrapAssertion(
       done.fail(message);
     };
 
-    assertion(finish);
+    await assertion(finish);
     if (assertion.length === 0) {
       finish();
     }

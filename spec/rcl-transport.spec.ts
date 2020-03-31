@@ -1,6 +1,6 @@
-import { RomiService, RomiTopic } from '@osrf/romi-js-core-interfaces/transport';
 import * as rclnodejs from 'rclnodejs';
 import RclnodejsTransport from '../lib';
+import { testService, testTopic } from './support/test-interfaces';
 
 describe('rcl transport tests', () => {
   let node: rclnodejs.Node;
@@ -28,12 +28,6 @@ describe('rcl transport tests', () => {
   });
 
   itt('publish subscribe loopback', done => {
-    const testTopic: RomiTopic<unknown> = {
-      validate: msg => msg,
-      type: 'std_msgs/msg/String',
-      topic: 'test_topic',
-    };
-
     transport.subscribe(testTopic, msg => {
       expect(msg.data).toBe('test');
       done();
@@ -43,18 +37,22 @@ describe('rcl transport tests', () => {
     publisher.publish({ data: 'test' });
   });
 
-  itt('call service', done => {
-    const testService: RomiService<unknown, unknown> = {
-      validateRequest: msg => msg,
-      validateResponse: msg => msg,
-      type: 'std_srvs/srv/SetBool',
-      service: 'test_service',
-    };
+  itt('service loopback', async () => {
+    const service = transport.createService(testService);
+    service.start(() => ({ message: 'success', success: true }));
+    const result = await transport.call(testService, { data: true });
+    expect(result.message).toBe('success');
+    expect(result.success).toBe(true);
+  });
 
-    node.createService(testService.type as rclnodejs.TypeClass, testService.service, {}, () => {
-      done();
+  itt('async service loopback', async () => {
+    const service = transport.createService(testService);
+    service.start(async () => {
+      await new Promise(res => setTimeout(res, 100));
+      return { message: 'success', success: true };
     });
-
-    transport.call(testService, { data: true });
+    const result = await transport.call(testService, { data: true });
+    expect(result.message).toBe('success');
+    expect(result.success).toBe(true);
   });
 });
