@@ -1,6 +1,6 @@
 {
   "name": "@osrf/romi-js-rclnodejs-transport",
-  "version": "0.0.2-alpha.3",
+  "version": "0.0.2-alpha.4",
   "description": "transport for RoMi using rclnodejs",
   "scripts": {
     "build": "tsc",
@@ -18,7 +18,7 @@
   "author": "Teo Koon Peng <koonpeng@openrobotics.org>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@osrf/romi-js-core-interfaces": "file:../romi-js-core-interfaces",
+    "@osrf/romi-js-core-interfaces": "0.0.2-alpha.4",
     "rclnodejs": "^0.13.0"
   },
   "devDependencies": {
