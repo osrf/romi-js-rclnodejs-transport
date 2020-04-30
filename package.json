@@ -8,7 +8,7 @@
     "watch": "tsc --watch",
     "clean": "tsc --build --clean",
     "test": "jasmine",
-    "lint": "eslint --ext .ts lib spec",
+    "lint": "eslint --ext .ts lib spec examples",
     "docs": "rm -rf docs && typedoc"
   },
   "repository": {
