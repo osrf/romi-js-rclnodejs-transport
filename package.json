@@ -19,7 +19,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@osrf/romi-js-core-interfaces": "0.0.2-alpha.4",
-    "rclnodejs": "^0.13.0"
+    "rclnodejs": "^0.14.0"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.4",
