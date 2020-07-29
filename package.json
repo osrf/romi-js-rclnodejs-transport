@@ -4,7 +4,7 @@
   "description": "transport for RoMi using rclnodejs",
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build",
+    "prepack": "npm run build",
     "watch": "tsc --watch",
     "clean": "tsc --build --clean",
     "test": "jasmine",
