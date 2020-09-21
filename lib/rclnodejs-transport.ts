@@ -117,13 +117,15 @@ export class RclnodejsTransport extends TransportEvents implements Transport {
 
     // type information for Node.createSubscription is broken, options can be undefined.
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    const rclOptions = options ? RclnodejsTransport.toRclnodejsOptions(options) : undefined as any;
+    const rclOptions = options
+      ? RclnodejsTransport.toRclnodejsOptions(options)
+      : (undefined as any);
 
     const rosSub = this._node.createSubscription(
       RclnodejsTransport.toRclnodejsTypeClass(topic),
       topic.topic,
       rclOptions,
-      msg => cb(topic.validate(msg)),
+      (msg) => cb(topic.validate(msg)),
     );
 
     return {
@@ -145,9 +147,12 @@ export class RclnodejsTransport extends TransportEvents implements Transport {
       );
       this._clients.set(service.service, client);
     }
-    return new Promise(res => {
+    return new Promise(async (res) => {
       if (client) {
-        client.sendRequest(req, resp => {
+        if (!(await client.waitForService(10000))) {
+          throw new Error('service not available');
+        }
+        client.sendRequest(req, (resp) => {
           res(service.validateResponse(resp));
         });
       }
@@ -170,7 +175,7 @@ export class RclnodejsTransport extends TransportEvents implements Transport {
           (req, resp) => {
             const result = handler(service.validateRequest(req));
             if (result instanceof Promise) {
-              (result as Promise<rclnodejs.Message>).then(x => resp.send(x));
+              (result as Promise<rclnodejs.Message>).then((x) => resp.send(x));
             } else {
               resp.send(result as rclnodejs.Message);
             }
