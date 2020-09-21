@@ -4,12 +4,12 @@
   "description": "transport for RoMi using rclnodejs",
   "scripts": {
     "build": "tsc",
-    "prepack": "npm run build",
+    "prepack": "npm run clean && npm run build",
     "watch": "tsc --watch",
     "clean": "tsc --build --clean",
     "test": "jasmine",
     "lint": "eslint --ext .ts lib spec examples",
-    "release": "standard-version"
+    "release": "standard-version && git push --follow-tags origin master && npm publish"
   },
   "repository": {
     "type": "git",
