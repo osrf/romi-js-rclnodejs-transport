@@ -1,6 +1,6 @@
 {
   "name": "@osrf/romi-js-rclnodejs-transport",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "transport for RoMi using rclnodejs",
   "scripts": {
     "build": "tsc",
@@ -9,7 +9,7 @@
     "clean": "tsc --build --clean",
     "test": "jasmine",
     "lint": "eslint --ext .ts lib spec examples",
-    "release": "standard-version && git push --follow-tags origin master && npm publish"
+    "release": "standard-version && npm publish && git push --follow-tags origin master"
   },
   "repository": {
     "type": "git",
