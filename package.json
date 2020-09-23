@@ -1,6 +1,6 @@
 {
   "name": "@osrf/romi-js-rclnodejs-transport",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "transport for RoMi using rclnodejs",
   "scripts": {
     "build": "tsc",
