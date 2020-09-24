@@ -147,11 +147,11 @@ export class RclnodejsTransport extends TransportEvents implements Transport {
       );
       this._clients.set(service.service, client);
     }
-    return new Promise(async (res) => {
+    if (!(await client.waitForService(10000))) {
+      throw new Error('service not available');
+    }
+    return new Promise((res) => {
       if (client) {
-        if (!(await client.waitForService(10000))) {
-          throw new Error('service not available');
-        }
         client.sendRequest(req, (resp) => {
           res(service.validateResponse(resp));
         });
