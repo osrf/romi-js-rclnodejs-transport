@@ -17,9 +17,14 @@ import * as rclnodejs from 'rclnodejs';
 export class RclnodejsTransport extends TransportEvents implements Transport {
   static async create(nodeName: string): Promise<RclnodejsTransport> {
     try {
-      await rclnodejs.init();
-    } catch {
-      /* do nothing */
+      const rosArgs: string[] | undefined = process.env['RCLNODEJS_ROS_ARGS']
+        ? JSON.parse(process.env['RCLNODEJS_ROS_ARGS'])
+        : undefined;
+      await rclnodejs.init(undefined, rosArgs);
+    } catch (e) {
+      if ((e as Error).message !== 'The context has already been initialized.') {
+        throw e;
+      }
     }
     return new RclnodejsTransport(nodeName);
   }
