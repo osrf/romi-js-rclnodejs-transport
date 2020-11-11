@@ -9,7 +9,8 @@
     "clean": "tsc --build --clean",
     "test": "jasmine",
     "lint": "eslint --ext .ts lib spec examples",
-    "release": "standard-version && npm publish && git push --follow-tags origin master"
+    "postpublish": "git push --follow-tags origin master",
+    "release": "standard-version"
   },
   "repository": {
     "type": "git",
