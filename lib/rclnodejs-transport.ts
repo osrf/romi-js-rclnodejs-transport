@@ -15,18 +15,13 @@ import {
 import * as rclnodejs from 'rclnodejs';
 
 export class RclnodejsTransport extends TransportEvents implements Transport {
-  static async create(nodeName: string): Promise<RclnodejsTransport> {
-    try {
-      const rosArgs: string[] | undefined = process.env['RCLNODEJS_ROS_ARGS']
-        ? JSON.parse(process.env['RCLNODEJS_ROS_ARGS'])
-        : undefined;
-      await rclnodejs.init(undefined, rosArgs);
-    } catch (e) {
-      if ((e as Error).message !== 'The context has already been initialized.') {
-        throw e;
-      }
-    }
-    return new RclnodejsTransport(nodeName);
+  /**
+   * @throws throws if initialize rclnodejs failed.
+   */
+  static async create(nodeName: string, rosArgs?: string[]): Promise<RclnodejsTransport> {
+    const context = new rclnodejs.Context();
+    await rclnodejs.init(context, rosArgs);
+    return new RclnodejsTransport(context, nodeName);
   }
 
   static toRclnodejsTypeClass(
@@ -197,12 +192,14 @@ export class RclnodejsTransport extends TransportEvents implements Transport {
     this._node.destroy();
   }
 
+  private _context: rclnodejs.Context;
   private _node: rclnodejs.Node;
   private _clients = new Map<string, rclnodejs.Client>();
 
-  private constructor(nodeName: string) {
+  private constructor(context: rclnodejs.Context, nodeName: string) {
     super();
-    this._node = rclnodejs.createNode(nodeName);
+    this._context = context;
+    this._node = rclnodejs.createNode(nodeName, undefined, this._context);
     rclnodejs.spin(this._node);
   }
 }
